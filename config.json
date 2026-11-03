@@ -1,0 +1,33 @@
+{
+  "home": "TYO",
+  "currency": "jpy",
+  "months_ahead": 6,
+
+  "montreal": {
+    "city": "YMQ",
+    "stay_days": [7, 60],
+    "stay_buckets": [[7, 13], [14, 27], [28, 60]],
+    "self_transfer_layover_hours": [4, 26],
+    "nearby_airports": {
+      "YOW": "Ottawa — ~2h by train/bus to Montreal",
+      "YTO": "Toronto — ~5h by VIA Rail, or a cheap domestic hop",
+      "PBG": "Plattsburgh NY — ~1h15 drive to Montreal",
+      "BTV": "Burlington VT — ~2h drive to Montreal",
+      "BOS": "Boston — ~5h bus to Montreal",
+      "NYC": "New York — ~7–8h bus/train to Montreal"
+    },
+    "alert_below": 140000
+  },
+
+  "asia": {
+    "stay_days": [3, 21],
+    "stay_buckets": [[3, 6], [7, 13], [14, 21]],
+    "include_japan_domestic": false,
+    "open_jaw_max_km": 900,
+    "hop": { "first_stops": 12, "days_per_stop": [2, 7] },
+    "alert_below": 30000
+  },
+
+  "max_trips_kept": { "montreal": 600, "asia": 2500 },
+  "request_pause_seconds": 0.6
+}

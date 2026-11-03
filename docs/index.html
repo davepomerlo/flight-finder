@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0f2a4a">
+<title>Flight Finder · Tokyo</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
+<style>
+:root{
+  --bg:#f4f6f9; --card:#fff; --ink:#14202e; --muted:#5d6b7c; --line:#e3e8ef;
+  --accent:#1d5fd1; --accent-soft:#e6efff; --good:#0f8a5f; --good-soft:#e3f6ee;
+  --warn:#a65d00; --warn-soft:#fff3df; --head:#0f2a4a;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#0d1219; --card:#161e29; --ink:#e8eef6; --muted:#93a1b3; --line:#263242;
+    --accent:#6ea0ff; --accent-soft:#1b2a45; --good:#4fd1a1; --good-soft:#143328;
+    --warn:#f2b155; --warn-soft:#3a2a12; --head:#0a1a2e; }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Sans",sans-serif;-webkit-text-size-adjust:100%}
+header{background:var(--head);color:#fff;padding:14px 16px 0;position:sticky;top:0;z-index:5}
+header h1{margin:0;font-size:18px;letter-spacing:.2px}
+header .sub{font-size:12px;opacity:.75;margin-top:2px}
+.tabs{display:flex;gap:4px;margin-top:10px}
+.tabs button{flex:1;background:transparent;border:0;color:#fff;opacity:.65;font:600 15px system-ui;padding:10px 0 12px;border-bottom:3px solid transparent;cursor:pointer}
+.tabs button.on{opacity:1;border-color:#7fb0ff}
+main{max-width:720px;margin:0 auto;padding:12px 12px 40px}
+.banner{background:var(--warn-soft);color:var(--warn);border-radius:10px;padding:10px 12px;font-size:13px;margin-bottom:12px}
+.hero{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.hero .lbl{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.hero .big{font-size:30px;font-weight:700;margin:2px 0}
+.hero .meta{font-size:13px;color:var(--muted)}
+.hero svg{display:block;width:100%;height:46px;margin-top:8px}
+.months{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px;scrollbar-width:none}
+.months::-webkit-scrollbar{display:none}
+.mon{flex:0 0 auto;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 12px;text-align:left;cursor:pointer;color:var(--ink);font:inherit}
+.mon b{display:block;font-size:13px}
+.mon span{font-size:13px;color:var(--muted)}
+.mon.on{border-color:var(--accent);background:var(--accent-soft)}
+.mon.low span{color:var(--good);font-weight:600}
+.filters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.flabel{width:100%;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-top:4px}
+.chip{background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:6px 12px;font:500 13px system-ui;cursor:pointer}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.count{font-size:13px;color:var(--muted);margin:12px 2px 8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.price{font-size:22px;font-weight:700;white-space:nowrap}
+.route{font-weight:600}
+.dates{font-size:13px;color:var(--muted);margin-top:2px}
+.badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.badge{font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px;background:var(--accent-soft);color:var(--accent)}
+.badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge.good{background:var(--good-soft);color:var(--good)}
+.note{font-size:12.5px;color:var(--warn);margin-top:6px}
+details{margin-top:8px}
+summary{font-size:13px;color:var(--accent);cursor:pointer;list-style:none}
+summary::-webkit-details-marker{display:none}
+.tk{border-top:1px dashed var(--line);padding:9px 0 2px;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.tk .l{font-size:13px}
+.tk .l b{font-size:14px}
+.tk .l div{color:var(--muted)}
+.book{flex:0 0 auto;background:var(--accent);color:#fff;text-decoration:none;font:600 13px system-ui;padding:8px 12px;border-radius:9px;text-align:center}
+.book small{display:block;font-weight:500;opacity:.85;font-size:11px}
+.dest{display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.dest .name{font-weight:600;font-size:16px}
+.dest .ctry{font-size:12.5px;color:var(--muted)}
+.more{display:block;width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;color:var(--accent);font:600 14px system-ui;cursor:pointer;margin-top:4px}
+.sub-list{margin-top:10px}
+.sub-list .card{background:var(--bg);border-radius:12px}
+footer{font-size:12px;color:var(--muted);margin-top:24px;line-height:1.5}
+.empty{text-align:center;color:var(--muted);padding:30px 10px}
+</style>
+</head>
+<body>
+<header>
+  <h1>✈️ Flight Finder <span style="opacity:.6;font-weight:500">· from Tokyo</span></h1>
+  <div class="sub" id="updated">Loading…</div>
+  <div class="tabs"><button data-tab="mtl" class="on">Montreal</button><button data-tab="asia">Asia</button></div>
+</header>
+<main id="app"></main>
+
+<script>
+const S = { tab: "mtl", mtl: { month: null, stay: null, kinds: new Set(["Round trip","Two one-ways","Self-transfer"]), shown: 25 },
+            asia: { month: null, stay: null, regions: new Set(), kinds: new Set(["Round trip","Two one-ways","Open-jaw","Multi-city"]), open: null, shown: 30 } };
+let D = null;
+const $ = s => document.querySelector(s);
+const yen = n => "¥" + Math.round(n).toLocaleString("en-US");
+const city = c => (D.cities[c] && D.cities[c].name) || c;
+const air = c => (D.airlines[c] || c);
+const DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"], MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function fmtDay(iso){ const [y,m,d] = iso.slice(0,10).split("-").map(Number); const dt = new Date(Date.UTC(y,m-1,d)); return `${DOW[dt.getUTCDay()]} ${d} ${MON[m-1]}`; }
+const fmtTime = iso => iso.slice(11,16);
+const fmtDur = m => m ? `${Math.floor(m/60)}h${String(m%60).padStart(2,"0")}` : "";
+const monLabel = ym => { const [y,m] = ym.split("-").map(Number); return `${MON[m-1]} '${String(y).slice(2)}`; };
+const stops = n => n === 0 ? "direct" : n === 1 ? "1 stop" : `${n} stops`;
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function store(k, v){ try { localStorage.setItem("ff:"+k, JSON.stringify(v)); } catch(e){} }
+function load(k){ try { return JSON.parse(localStorage.getItem("ff:"+k)); } catch(e){ return null; } }
+
+function sparkline(series){
+  if (!series || series.length < 2) return "";
+  const p = series.map(x => x[1]), lo = Math.min(...p), hi = Math.max(...p), w = 300, h = 46, pad = 4;
+  const pts = p.map((v,i) => `${(i/(p.length-1))*(w-2*pad)+pad},${hi===lo? h/2 : h-pad-((v-lo)/(hi-lo))*(h-2*pad)}`).join(" ");
+  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><polyline points="${pts}" fill="none" stroke="var(--accent)" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>`;
+}
+function trend(key, now){
+  const s = D.history[key]; if (!s || !s.length) return "";
+  const low = Math.min(...s.map(x => x[1]));
+  const prev = s.length > 1 ? s[s.length-2][1] : null;
+  let t = s.length > 1 ? `Lowest seen ${yen(low)} in ${s.length} days of checks` : `Tracking started today`;
+  if (prev && now < prev) t += ` · <span style="color:var(--good)">▼ ${yen(prev-now)} since last check</span>`;
+  else if (prev && now > prev) t += ` · ▲ ${yen(now-prev)} since last check`;
+  return t;
+}
+
+function ticketHTML(t){
+  const both = t.ret ? `<div>${fmtDay(t.dep)} ${fmtTime(t.dep)} · ${fmtDur(t.dur)} · ${stops(t.stops)}</div><div>Back ${fmtDay(t.ret)} ${fmtTime(t.ret)} · ${fmtDur(t.dur_back)} · ${stops(t.ret_stops)}</div>`
+                     : `<div>${fmtDay(t.dep)} ${fmtTime(t.dep)} · ${fmtDur(t.dur)} · ${stops(t.stops)}</div>`;
+  const label = `${esc(city(t.from))} ${t.ret ? "⇄" : "→"} ${esc(city(t.to))}`;
+  const link = t.link ? `<a class="book" href="${esc(t.link)}" target="_blank" rel="noopener">Check<small>${yen(t.price)}</small></a>` : `<span class="book" style="opacity:.5">${yen(t.price)}</span>`;
+  return `<div class="tk"><div class="l"><b>${label}</b> <span style="color:var(--muted)">${t.fa !== t.from || t.ta !== t.to ? esc(t.fa+"–"+t.ta) : ""}</span>${both}<div>${esc(air(t.airline))} ${esc(t.flight)}</div></div>${link}</div>`;
+}
+function tripHTML(t, opts = {}){
+  const route = t.route.map(city).join(" → ");
+  const b = [`<span class="badge ${t.self_transfer ? "warn" : t.kind==="Round trip" ? "good" : ""}">${esc(t.kind)}</span>`];
+  if (t.tickets.length > 1) b.push(`<span class="badge">${t.tickets.length} tickets</span>`);
+  if (t.self_transfer) b.push(`<span class="badge warn">Recheck bags · no missed-connection cover</span>`);
+  if (t.kind === "Nearby airport") b.push(`<span class="badge warn">+ ground transport</span>`);
+  const maxStops = Math.max(...t.tickets.map(k => Math.max(k.stops, k.ret_stops ?? 0)));
+  if (maxStops === 0 && t.tickets.length === 1) b.push(`<span class="badge good">Nonstop</span>`);
+  return `<div class="card">
+    <div class="top"><div><div class="route">${esc(route)}</div>
+      <div class="dates">${fmtDay(t.out)} → ${t.back ? fmtDay(t.back) : "?"} · ${t.stay} days</div></div>
+      <div class="price">${yen(t.price)}</div></div>
+    <div class="badges">${b.join("")}</div>
+    ${t.note ? `<div class="note">${esc(t.note)}</div>` : ""}
+    <details ${opts.open ? "open" : ""}><summary>Flights &amp; booking ▾</summary>${t.tickets.map(ticketHTML).join("")}</details>
+  </div>`;
+}
+
+function chips(items, isOn, attr){ return items.map(([v,l]) => `<button class="chip ${isOn(v)?"on":""}" ${attr}="${esc(v)}">${esc(l)}</button>`).join(""); }
+function stayOK(t, stay){ if (!stay) return true; const [a,b] = stay.split("-").map(Number); return t.stay >= a && t.stay <= b; }
+function bucketChips(buckets){ return [["", "Any length"], ...buckets.map(([a,b]) => [`${a}-${b}`, `${a}–${b} days`])]; }
+
+function renderMtl(){
+  const st = S.mtl, all = D.montreal;
+  const pool = all.filter(t => st.kinds.has(t.kind) && stayOK(t, st.stay));
+  const real = all.filter(t => t.kind !== "Nearby airport");
+  const best = real[0];
+  const months = [...new Set(all.map(t => t.out.slice(0,7)))].sort();
+  const byMonth = months.map(m => [m, Math.min(...pool.filter(t => t.out.startsWith(m)).map(t => t.price))]);
+  const lowM = Math.min(...byMonth.map(x => x[1]));
+  const list = pool.filter(t => !st.month || t.out.startsWith(st.month));
+  const buckets = [[7,13],[14,27],[28,60]];
+  let h = "";
+  if (best) h += `<div class="hero"><div class="lbl">Cheapest Tokyo ⇄ Montreal</div><div class="big">${yen(best.price)}</div>
+     <div class="meta">${fmtDay(best.out)} → ${fmtDay(best.back)} · ${best.stay} days · ${esc(best.kind)}</div>
+     <div class="meta">${trend("montreal", best.price)}</div>${sparkline(D.history["montreal"])}</div>`;
+  h += `<div class="months">${byMonth.map(([m,p]) => `<button class="mon ${st.month===m?"on":""} ${p===lowM?"low":""}" data-month="${m}"><b>${monLabel(m)}</b><span>${isFinite(p)?yen(p):"—"}</span></button>`).join("")}</div>`;
+  h += `<div class="filters"><div class="flabel">Trip length</div>${chips(bucketChips(buckets), v => (st.stay||"")===v, "data-stay")}</div>`;
+  h += `<div class="filters"><div class="flabel">Ticket types</div>${chips([["Round trip","Round trip"],["Two one-ways","Two one-ways"],["Self-transfer","Self-transfer"],["Nearby airport","Nearby airports"]], v => st.kinds.has(v), "data-kind")}</div>`;
+  h += `<div class="count">${list.length} trips${st.month ? " in " + monLabel(st.month) : ""}, cheapest first</div>`;
+  h += list.length ? list.slice(0, st.shown).map(t => tripHTML(t)).join("") : `<div class="empty">Nothing matches these filters.</div>`;
+  if (list.length > st.shown) h += `<button class="more" data-more="mtl">Show more</button>`;
+  return h;
+}
+
+function renderAsia(){
+  const st = S.asia, all = D.asia;
+  const regions = [...new Set(all.map(t => D.cities[t.dest]?.region).filter(Boolean))].sort();
+  const pool = all.filter(t => st.kinds.has(t.kind) && stayOK(t, st.stay) &&
+                          (!st.regions.size || st.regions.has(D.cities[t.dest]?.region)));
+  const months = [...new Set(all.map(t => t.out.slice(0,7)))].sort();
+  const byMonth = months.map(m => [m, Math.min(...pool.filter(t => t.out.startsWith(m)).map(t => t.price))]);
+  const lowM = Math.min(...byMonth.map(x => x[1]));
+  const list = pool.filter(t => !st.month || t.out.startsWith(st.month));
+  const groups = new Map();
+  for (const t of list) { if (!groups.has(t.dest)) groups.set(t.dest, []); groups.get(t.dest).push(t); }
+  const dests = [...groups.entries()].sort((a,b) => a[1][0].price - b[1][0].price);
+  let h = "";
+  h += `<div class="months">${byMonth.map(([m,p]) => `<button class="mon ${st.month===m?"on":""} ${p===lowM?"low":""}" data-month="${m}"><b>${monLabel(m)}</b><span>${isFinite(p)?yen(p):"—"}</span></button>`).join("")}</div>`;
+  h += `<div class="filters"><div class="flabel">Region</div>${chips([["", "All of Asia"], ...regions.map(r => [r, r])], v => v ? st.regions.has(v) : !st.regions.size, "data-region")}</div>`;
+  h += `<div class="filters"><div class="flabel">Trip length</div>${chips(bucketChips([[3,6],[7,13],[14,21]]), v => (st.stay||"")===v, "data-stay")}</div>`;
+  h += `<div class="filters"><div class="flabel">Ticket types</div>${chips([["Round trip","Round trip"],["Two one-ways","Two one-ways"],["Open-jaw","Open-jaw"],["Multi-city","2-city trips"]], v => st.kinds.has(v), "data-kind")}</div>`;
+  h += `<div class="count">${dests.length} destinations${st.month ? " in " + monLabel(st.month) : ""} · tap one for more dates</div>`;
+  if (!dests.length) h += `<div class="empty">Nothing matches these filters.</div>`;
+  for (const [code, ts] of dests.slice(0, st.shown)) {
+    const c = D.cities[code] || {}, t = ts[0], open = st.open === code;
+    h += `<div class="card"><div class="dest" data-dest="${code}"><div><div class="name">${esc(c.name || code)}</div>
+        <div class="ctry">${esc(c.country || "")} · from ${fmtDay(t.out)} · ${t.stay} days · ${esc(t.kind)}</div>
+        <div class="ctry">${trend("asia:"+code, t.price)}</div></div>
+        <div class="price">${yen(t.price)}</div></div>
+      ${open ? `<div class="sub-list">${ts.slice(0, 12).map((x,i) => tripHTML(x, {open: i===0})).join("")}</div>` : ""}</div>`;
+  }
+  if (dests.length > st.shown) h += `<button class="more" data-more="asia">Show more destinations</button>`;
+  return h;
+}
+
+function render(){
+  document.querySelectorAll(".tabs button").forEach(b => b.classList.toggle("on", b.dataset.tab === S.tab));
+  let h = D.demo ? `<div class="banner"><b>Demo data.</b> These prices are made up. Add your free Travelpayouts token (see README) to get real fares.</div>` : "";
+  h += S.tab === "mtl" ? renderMtl() : renderAsia();
+  h += `<footer>Prices are the cheapest fares Aviasales users found in roughly the last 48 hours, so they can change or sell out. “Check” opens the live search; confirm the price there before you book.
+    <b>Self-transfer</b> and multi-ticket trips are separate bookings: if one flight is late, the next airline won't wait, and you collect and re-check bags yourself. Leave long gaps.</footer>`;
+  $("#app").innerHTML = h;
+}
+
+document.addEventListener("click", e => {
+  const el = e.target.closest("button, .dest"); if (!el) return;
+  const st = S[S.tab];
+  if (el.dataset.tab) { S.tab = el.dataset.tab; store("tab", S.tab); window.scrollTo(0,0); }
+  else if (el.dataset.month !== undefined) st.month = st.month === el.dataset.month ? null : el.dataset.month;
+  else if (el.dataset.stay !== undefined) st.stay = el.dataset.stay || null;
+  else if (el.dataset.kind) { st.kinds.has(el.dataset.kind) ? st.kinds.delete(el.dataset.kind) : st.kinds.add(el.dataset.kind); }
+  else if (el.dataset.region !== undefined) { const r = el.dataset.region; if (!r) st.regions.clear(); else st.regions.has(r) ? st.regions.delete(r) : st.regions.add(r); }
+  else if (el.dataset.more) st.shown += 25;
+  else if (el.dataset.dest) st.open = st.open === el.dataset.dest ? null : el.dataset.dest;
+  else return;
+  render();
+});
+
+fetch("data.json", {cache: "no-cache"}).then(r => r.json()).then(d => {
+  D = d;
+  const t = load("tab"); if (t === "mtl" || t === "asia") S.tab = t;
+  const ago = Math.round((Date.now() - new Date(d.generated_at)) / 36e5);
+  $("#updated").textContent = `Updated ${ago < 1 ? "just now" : ago + "h ago"} · ${d.montreal.length + d.asia.length} trips checked · prices in yen`;
+  render();
+}).catch(err => { $("#app").innerHTML = `<div class="empty">Couldn't load data.json (${esc(err.message)}). Has the first update run yet?</div>`; });
+</script>
+</body>
+</html>

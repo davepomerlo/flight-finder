@@ -1,0 +1,38 @@
+name: Update fares
+
+on:
+  schedule:
+    - cron: "17 9,21 * * *"   # 06:17 and 18:17 Japan time
+  workflow_dispatch:          # "Run workflow" button for an on-demand check
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fares
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Find fares
+        env:
+          TRAVELPAYOUTS_TOKEN: ${{ secrets.TRAVELPAYOUTS_TOKEN }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: python finder.py
+
+      - name: Save results
+        run: |
+          git config user.name "flight-finder bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data.json docs/history.json
+          git diff --cached --quiet || git commit -m "Update fares $(date -u +%F)"
+          git push
